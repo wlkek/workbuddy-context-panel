@@ -1,7 +1,7 @@
 /* 上下文面板 —— 分析层
  * ------------------------------------------------------------------
  * 在 worker_threads 里运行，读 ~/.workbuddy 下的 SQLite 与 transcript，
- * 口径与网页版 core/analyze.py 一致：
+ * 口径沿用 dsh-context 的统计方式，解析按 WorkBuddy 的 transcript 结构重写：
  *
  *   一次请求 = 一条带 providerData.usage.inputTokens 的记录
  *   固定开销 = 首个请求的 inputTokens − 当时可见内容（估算）

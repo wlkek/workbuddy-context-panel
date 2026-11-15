@@ -1,6 +1,7 @@
 # WorkBuddy 上下文面板
 
-在客户端里查看上下文占用与逐请求明细。数据来自本机的 `~/.workbuddy`，只读。
+把 [dsh-context](https://github.com/bowenliang123/dsh-context) 的上下文视图搬到 WorkBuddy 客户端内部。
+数据来自本机的 `~/.workbuddy`，只读。
 
 **非官方项目**，与 WorkBuddy、腾讯没有关系。它通过运行时注入修改界面，
 可能违反客户端的服务条款，使用前请自行评估。
@@ -9,9 +10,16 @@
 
 ## 版本说明
 
-这个面板对应的是 dsh-context 网页版的全部视图。网页版要单独起一个 Python 服务，
-再开一个浏览器标签；这里改成客户端内的面板，数据由客户端主进程读取，
-关掉面板就不再占用资源，也不会有额外的常驻进程。
+[dsh-context](https://github.com/bowenliang123/dsh-context) 是 DeepSeekRuntime 的上下文洞察插件，
+提供洞察页、Context 标签页、Fleet 与 `/context` 命令。它依赖宿主的
+`contextPressure` / `contextBreakdown` 投影和事件流，插件形式也只对 DeepSeekRuntime 生效，
+WorkBuddy 既没有这套接口，也加载不了这个插件。
+
+所以这里不是把它装进来，而是按同一套口径、用 WorkBuddy 自己的数据重建了这套视图：
+会话与占用读 `workbuddy.db`，逐请求用量读 transcript 的 `providerData.usage`，
+分类组成读 `conversationContextUsage.json`（与输入框旁环形图同源）。
+
+数据由客户端主进程读取，不额外起服务；关掉面板就不再占用，也没有常驻进程。
 
 5.9.2 起客户端把 renderer 打包进 `app.asar` 并加了 SHA256 完整性校验，
 往页面文件里插加载器的做法已经没有入口。5.11.0 改过首页和顶栏，
@@ -37,9 +45,30 @@
 - 请求拆解：下拉选择任意一次请求，查看它的窗口组成
 - 工具、文件活动、命令、事件四张表
 
+## 与 dsh-context 的对照
+
+面板覆盖了 dsh-context 的洞察页与 Context 标签页，按视图逐项对照：
+
+| dsh-context | 本面板 | 状态 |
+|---|---|---|
+| 洞察页：KPI 栏、7 天用量图、活动热力图、技能 / 工具 / 命令账本、组成环形图、会话卡片 | 总览：6 项指标、14 天用量、组成环形图、会话卡片（搜索 / 排序） | 主要视图已移植；热力图与技能 / 工具账本未做 |
+| Context 标签页：Context Stats / Token Stats / Timing Stats | 4 项指标：累计输入、缓存命中、工具调用与耗时、积分与压缩次数 | 部分：不做价格估算，直接用宿主积分；没有模型 / 工具 / 开销的时间占比 |
+| Current Context：六色堆叠条 + 压缩预留斜纹 | 同名卡片：固定开销 / 用户 / 注入 / 助手 / 推理 / 工具返回 + 剩余窗口斜纹 | 已移植 |
+| Context Trend：逐请求堆叠柱、总量 / 增量、压缩标记、步骤摘要 | 同名卡片：最多 240 根桶化柱、总量 / 增量、压缩虚线、悬停明细 | 部分：没有步骤摘要与 Turn 粒度 |
+| Context Browser：七类下钻、附件、DNA 模式 | 请求拆解：下拉选择一次请求，看该次分类组成 | 简化：只到分类，不下钻到单条内容 |
+| Context Events：注入 / 压缩 / 清理 / 模型切换 / 计划模式 | 事件表：压缩、工具失败 | 部分：只覆盖 transcript 能判定的事件 |
+| File Activity：读写搜、行数变化、单次操作日志 | 文件活动：读写搜次数 | 部分：没有行数变化与操作日志 |
+| 命令执行：程序分布、状态、墙钟耗时 | 命令表：程序与次数 | 部分：没有状态与耗时 |
+| Fleet 标签页：Agent 网络、协作任务 | — | 未实现：WorkBuddy 的子 Agent transcript 结构未验证 |
+| `/context` 命令、Preferences 卡片 | — | 不适用：宿主不开放斜杠命令与插件偏好接口 |
+
+分类粒度也不同。dsh-context 是八类：系统提示词、工具定义、用户消息、注入上下文、技能注入、
+工具调用、推理、回答；这里合并成六类——系统提示词与工具定义算「固定开销」，技能注入并入
+「注入内容」，工具调用与结果并入「工具返回」。原因是 transcript 不落盘前两类，只能整体估一个固定开销。
+
 ## 数据口径
 
-与网页版 `core/analyze.py` 一致：
+口径沿用 dsh-context 的统计方式，解析部分按 WorkBuddy 的 transcript 结构重写：
 
 - 一次请求指一条带 `providerData.usage.inputTokens` 的记录，按 `(conversationRequestId, stepSeq)` 去重
 - `inputTokens` 是实测值；各分类按文本长度估算后，整体缩放到该次实测总量

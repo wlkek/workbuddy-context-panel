@@ -24,7 +24,7 @@ v1.0.0 的入口判定写成了正则 `/\/renderer\/index\.html$/i`。这段代�
 
 ## v1.0.0 — 首个版本（2026-11-15）
 
-从 dsh-context 网页版完整移植到客户端内面板。
+把 dsh-context 的洞察页与 Context 标签页移植到客户端内面板。
 
 **功能**
 
@@ -36,7 +36,7 @@ v1.0.0 的入口判定写成了正则 `/\/renderer\/index\.html$/i`。这段代�
 
 - 用 JS 重写 `core/analyze.py`，口径保持一致：按 `(conversationRequestId, stepSeq)` 去重、固定开销取首请求差值、分类占比缩放后锚定实测 `inputTokens`
 - 跑在 `worker_threads`，主进程只做调度；索引按 transcript 的修改时间与大小缓存
-- 与网页版逐字段对账：六个会话的 points、tools、files、commands、events、totals、base 全部一致；中文与 emoji 的 token 计数按码点计算，不再有 ±1 的取整差
+- 与移植前的实现逐字段对账：六个会话的 points、tools、files、commands、events、totals、base 全部一致；中文与 emoji 的 token 计数按码点计算，不再有 ±1 的取整差
 
 **通道与布局**
 
