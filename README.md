@@ -180,6 +180,13 @@ $env:WB_DRY_RUN=1
 「模型图标」和「思考强度滑条」共用同一个注入器和快捷方式，各自安装在 `mods/<id>/` 下。
 安装顺序随意，卸载任意一个不影响其他两个。三个仓库的注入器保持同一份代码。
 
+## 开发
+
+- `tools/fixture.html` 用生成的静态数据跑界面，不依赖客户端。先执行 `node tools/make-fixture-data.js`，
+  再用浏览器打开：`?open=1` 自动展开面板，`?view=session` 直接进会话详情
+- `tools/cdp.js` 连无头浏览器的调试端口求值，用来量真实几何、检查横向溢出
+- `tools/page-eval.js` 在运行中的客户端主进程里求值，排查注入与数据层问题
+
 ## License
 
 MIT
