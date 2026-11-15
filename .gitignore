@@ -1,0 +1,4 @@
+tools/data.js
+cache/
+*.log
+*.bak

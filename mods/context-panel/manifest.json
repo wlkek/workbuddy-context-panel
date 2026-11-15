@@ -1,0 +1,8 @@
+{
+  "name": "上下文面板",
+  "version": "1.0.0",
+  "description": "上下文占用、逐请求趋势、工具与文件统计",
+  "main": "ui.js",
+  "files": ["ui.js"],
+  "server": "server.js"
+}
