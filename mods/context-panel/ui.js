@@ -488,6 +488,7 @@
     var iw = w - padL - padR, ih = h - padT - padB;
     var max = Math.max.apply(null, days.map(function (d) { return d.tokens; }).concat([1]));
     var bw = iw / days.length;
+    var lastLabelX = -100;
     ctx.font = '9px system-ui';
     ctx.textBaseline = 'middle';
 
@@ -519,10 +520,12 @@
       ctx.lineTo(x + bwid, padT + ih);
       ctx.closePath();
       ctx.fill();
-      if (i % 2 === 0 || i === days.length - 1) {
+      var lx = x + bwid / 2;
+      if ((i % 2 === 0 || i === days.length - 1) && lx - lastLabelX > 32) {
+        lastLabelX = lx;
         ctx.fillStyle = '#656d7c';
         ctx.textAlign = 'center';
-        ctx.fillText(d.date.slice(5).replace('-', '/'), x + bwid / 2, padT + ih + 8);
+        ctx.fillText(d.date.slice(5).replace('-', '/'), lx, padT + ih + 8);
       }
     });
     cv.__days = days;

@@ -78,9 +78,9 @@ const run = new Function('require', 'process', 'setTimeout', 'setInterval', 'cle
   check('返回 OK 且识别到 3 个字段', typeof result === 'string' && result.indexOf('OK mods=1 servers=1') === 0);
 
   /* 窗口晚了 300ms 才创建，模拟 bootstrap 早于窗口 */
-  const other = makeWc('file:///D:/Program%20Files/WorkBuddy/WorkBuddy/resources/app.asar/renderer/help.html');
+  const other = makeWc('file:///C:/Program%20Files/WorkBuddy/resources/app.asar/renderer/help.html');
   wcs.push(other);
-  const target = makeWc('file:///D:/Program%20Files/WorkBuddy/WorkBuddy/resources/app.asar/renderer/index.html');
+  const target = makeWc('file:///C:/Program%20Files/WorkBuddy/resources/app.asar/renderer/index.html');
   wcs.push(target);
 
   await new Promise((r) => setTimeout(r, 1200));

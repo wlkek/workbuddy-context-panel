@@ -182,9 +182,10 @@ $env:WB_DRY_RUN=1
 
 ## 开发
 
-- `tools/fixture.html` 用生成的静态数据跑界面，不依赖客户端。先执行 `node tools/make-fixture-data.js`，
+- `tools/fixture.html` 用生成的静态数据跑界面，不依赖客户端。先执行 `node tools/make-demo-data.js`（生成的是虚构数据），
   再用浏览器打开：`?open=1` 自动展开面板，`?view=session` 直接进会话详情
 - `tools/test-bootstrap.js` 用假的 electron 跑真实 bootstrap 分支，验证入口判定与注入时机
+- `tools/make-demo-data.js` 生成纯虚构的演示数据，截图只用它，不碰本机会话
 - `tools/cdp.js` 连无头浏览器的调试端口求值，用来量真实几何、检查横向溢出
 - `tools/page-eval.js` 在运行中的客户端主进程里求值，排查注入与数据层问题
 
