@@ -312,14 +312,17 @@
 
   /* 主进程每次只挂一个 resolver，用掉就置空，等它处理完再挂下一个。
    * 这样连点两下也不会把请求发给已经决议的 Promise。 */
-  function send(msg) {
+  function send(msg, tries) {
+    tries = tries || 0;
+    /* 通道没挂上时最多等 60 秒，别无限重试 */
+    if (tries > 1200) return;
     if (!window.__WB_CTX_PUSH) {
-      setTimeout(function () { send(msg); }, 50);
+      setTimeout(function () { send(msg, tries + 1); }, 50);
       return;
     }
     var fn = window.__WB_CTX_PUSH;
     window.__WB_CTX_PUSH = null;
-    try { fn(msg); } catch (e) { setTimeout(function () { send(msg); }, 80); }
+    try { fn(msg); } catch (e) { setTimeout(function () { send(msg, tries + 1); }, 80); }
   }
 
   window.__WB_CTX_ON_REPLY = function (rid, payload) {
