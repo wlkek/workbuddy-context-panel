@@ -94,13 +94,15 @@ token 估算规则：CJK 字符约 0.7 token，其余字符约 0.25 token。它�
 
 安装器会接管桌面、开始菜单、任务栏固定项里的 `WorkBuddy.lnk`：把目标改成注入器，
 原文件备份为 `WorkBuddy.lnk.wbmods.bak`，图标和名称保持不变。
-注册表 `HKCU\...\Run` 里的自启项一并接管，原值备份在 `%LOCALAPPDATA%\WbMods\autostart.json`。
+
+**开机自启默认不改动。** 安装器只会清掉旧版本写进去的注入器项，不会新建自启，
+也不会改客户端自己的自启项。开机不会自动拉起 WorkBuddy，只有点图标才会启动。
+
+如果确实想让开机那一次也带 mod，用 `install.cmd -AutoStart`：它会把客户端的
+Run 项改成注入器，原值备份到 `%LOCALAPPDATA%\WbMods\autostart.json`，卸载时还原。
 
 如果不想让官方图标被接管，使用 `install.cmd -KeepOfficialIcon`，
 此时只能通过新创建的「WorkBuddy (mods)」快捷方式启动。
-
-开机自启必须接管：Windows 重启时会先用它拉起客户端，如果它还指向原版，
-那一轮启动就没有任何 mod，之后再点快捷方式会被单实例锁挡掉。
 
 ### 安装目录识别
 
