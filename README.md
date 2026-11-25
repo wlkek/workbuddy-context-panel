@@ -134,7 +134,7 @@ Run 项改成注入器，原值备份到 `%LOCALAPPDATA%\WbMods\autostart.json`�
 ## 工作原理
 
 ```
-快捷方式 / 开机自启 → node.exe injector.js
+快捷方式 → launch.vbs → 注入器（隐藏运行）
                         ├─ 带 --inspect=<随机端口> 启动 WorkBuddy
                         ├─ 等主进程初始化完成，注入一段 bootstrap
                         ├─ bootstrap 加载 mods/*，声明 server 的在主进程里 require
